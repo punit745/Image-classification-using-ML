@@ -77,10 +77,10 @@ pip install -r requirements.txt
 ```
 
 This will install:
-- TensorFlow 2.15.0
-- NumPy 1.24.3
+- TensorFlow 2.18.0
+- NumPy 1.26.4
 - Matplotlib 3.8.0
-- Pillow 10.1.0
+- Pillow 10.3.0 (with security fixes)
 - Streamlit 1.28.1
 - scikit-learn 1.3.2
 
