@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+import os
 
 
 # Adding CSS styling for custom background and font
@@ -9,20 +10,11 @@ def set_background():
     st.markdown(
         """
         <style>
-        body {
-            background-color: #eaf7ff;  /* Light blue background */
-            color: #333;  /* Font color */
-            font-family: "Comic Sans MS", cursive;
-        }
         .stApp {
-            background: linear-gradient(135deg, #eaf7ff, #cce3f5); /* Gradient background */
-        }
-        .sidebar .sidebar-content {
-            background: #3e4e68; /* Sidebar background */
-            color: lightyellow;
+            background: linear-gradient(135deg, #eaf7ff, #cce3f5);
         }
         h1, h2, h3, h4, h5, h6 {
-            color: #0078D7; /* Heading color */
+            color: #0078D7;
         }
         </style>
         """,
@@ -136,7 +128,16 @@ def cifar10_classification():
         st.image(image, caption="Uploaded Image", use_column_width=True)
         st.write("Classifying...")
 
-        model = tf.keras.models.load_model("model111.h5")
+        # Check if model file exists
+        model_path = "saved_models/cnn_model_final.h5"
+        if not os.path.exists(model_path):
+            # Fall back to old model name if it exists
+            model_path = "model111.h5"
+            if not os.path.exists(model_path):
+                st.error("Model file not found. Please train the model first using train.py")
+                return
+        
+        model = tf.keras.models.load_model(model_path)
         class_names = [
             "airplane",
             "automobile",
