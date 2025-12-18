@@ -19,26 +19,32 @@ class TestDataLoading(unittest.TestCase):
     """Tests for data loading functionality."""
     
     def test_load_cifar10_data(self):
-        """Test that CIFAR-10 data loads correctly."""
-        X_train, y_train, X_test, y_test = load_cifar10_data()
-        
-        # Check shapes
-        self.assertEqual(len(X_train.shape), 4)
-        self.assertEqual(len(X_test.shape), 4)
-        self.assertEqual(X_train.shape[1:], (32, 32, 3))
-        self.assertEqual(X_test.shape[1:], (32, 32, 3))
-        
-        # Check normalization
-        self.assertGreaterEqual(X_train.min(), 0.0)
-        self.assertLessEqual(X_train.max(), 1.0)
-        self.assertGreaterEqual(X_test.min(), 0.0)
-        self.assertLessEqual(X_test.max(), 1.0)
-        
-        # Check labels
-        self.assertEqual(len(y_train.shape), 2)
-        self.assertEqual(len(y_test.shape), 2)
-        self.assertGreaterEqual(y_train.min(), 0)
-        self.assertLessEqual(y_train.max(), 9)
+        """Test that CIFAR-10 data loads correctly (skipped if no network)."""
+        try:
+            X_train, y_train, X_test, y_test = load_cifar10_data()
+            
+            # Check shapes
+            self.assertEqual(len(X_train.shape), 4)
+            self.assertEqual(len(X_test.shape), 4)
+            self.assertEqual(X_train.shape[1:], (32, 32, 3))
+            self.assertEqual(X_test.shape[1:], (32, 32, 3))
+            
+            # Check normalization
+            self.assertGreaterEqual(X_train.min(), 0.0)
+            self.assertLessEqual(X_train.max(), 1.0)
+            self.assertGreaterEqual(X_test.min(), 0.0)
+            self.assertLessEqual(X_test.max(), 1.0)
+            
+            # Check labels
+            self.assertEqual(len(y_train.shape), 2)
+            self.assertEqual(len(y_test.shape), 2)
+            self.assertGreaterEqual(y_train.min(), 0)
+            self.assertLessEqual(y_train.max(), 9)
+        except Exception as e:
+            if "URL fetch failure" in str(e) or "No address" in str(e):
+                self.skipTest("Network unavailable - skipping data loading test")
+            else:
+                raise
 
 
 class TestModels(unittest.TestCase):
@@ -82,14 +88,13 @@ class TestPrediction(unittest.TestCase):
     
     def test_predict_single_image(self):
         """Test prediction on a single image."""
-        # Load a small amount of test data
-        X_train, y_train, X_test, y_test = load_cifar10_data()
+        # Create mock data instead of loading from network
+        test_image = np.random.rand(32, 32, 3).astype('float32')
         
         # Build a simple model
         model = build_ann_model()
         
         # Test prediction function
-        test_image = X_test[0]
         predicted_class = predict_image(model, test_image)
         
         # Check prediction is valid class
@@ -99,14 +104,13 @@ class TestPrediction(unittest.TestCase):
     
     def test_predict_batch(self):
         """Test prediction on a batch of images."""
-        # Load test data
-        X_train, y_train, X_test, y_test = load_cifar10_data()
+        # Create mock data instead of loading from network
+        test_batch = np.random.rand(5, 32, 32, 3).astype('float32')
         
         # Build a simple model
         model = build_ann_model()
         
         # Test prediction on batch
-        test_batch = X_test[:5]
         predicted_class = predict_image(model, test_batch)
         
         # Check prediction is valid

@@ -1,8 +1,8 @@
 # Core ML/DL libraries
-tensorflow==2.15.0
-numpy==1.24.3
+tensorflow==2.18.0
+numpy==1.26.4
 matplotlib==3.8.0
-pillow==10.1.0
+pillow==10.3.0
 
 # Streamlit for web interface
 streamlit==1.28.1
