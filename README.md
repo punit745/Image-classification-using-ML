@@ -60,7 +60,7 @@ Image-classification-using-ML/
 ## Installation
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.9 or higher (tested with Python 3.9, 3.10, and 3.11)
 - pip package manager
 
 ### Setup
@@ -77,7 +77,7 @@ pip install -r requirements.txt
 ```
 
 This will install:
-- TensorFlow 2.18.0
+- TensorFlow 2.16.1 (compatible with Python 3.9-3.11)
 - NumPy 1.26.4
 - Matplotlib 3.8.0
 - Pillow 10.3.0 (with security fixes)
