@@ -4,25 +4,126 @@ import tensorflow as tf
 from PIL import Image
 
 
-# Adding CSS styling for custom background and font
+# Adding CSS styling for minimalist black & white theme
 def set_background():
     st.markdown(
         """
         <style>
-        body {
-            background-color: #eaf7ff;  /* Light blue background */
-            color: #333;  /* Font color */
-            font-family: "Comic Sans MS", cursive;
-        }
+        /* Main app background - clean white */
         .stApp {
-            background: linear-gradient(135deg, #eaf7ff, #cce3f5); /* Gradient background */
+            background-color: #FFFFFF;
         }
-        .sidebar .sidebar-content {
-            background: #3e4e68; /* Sidebar background */
-            color: lightyellow;
+        
+        /* Sidebar styling - elegant black */
+        [data-testid="stSidebar"] {
+            background-color: #1A1A1A;
         }
+        
+        [data-testid="stSidebar"] * {
+            color: #FFFFFF !important;
+        }
+        
+        /* Headings - professional black */
         h1, h2, h3, h4, h5, h6 {
-            color: #0078D7; /* Heading color */
+            color: #000000;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Body text - clean dark gray */
+        .stMarkdown, .stText, p {
+            color: #333333;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+        }
+        
+        /* File uploader styling */
+        [data-testid="stFileUploader"] {
+            border: 2px dashed #CCCCCC;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #F8F8F8;
+        }
+        
+        [data-testid="stFileUploader"]:hover {
+            border-color: #000000;
+            background-color: #F0F0F0;
+        }
+        
+        /* Button styling - minimalist black */
+        .stButton > button {
+            background-color: #000000;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 24px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .stButton > button:hover {
+            background-color: #333333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Select box styling */
+        .stSelectbox > div > div {
+            background-color: #F8F8F8;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+        }
+        
+        /* Image container */
+        [data-testid="stImage"] {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        /* Info boxes */
+        .stAlert {
+            background-color: #F8F8F8;
+            border-left: 4px solid #000000;
+            border-radius: 4px;
+        }
+        
+        /* Remove default streamlit branding colors */
+        .css-1d391kg, .css-1v0mbdj {
+            color: #333333;
+        }
+        
+        /* Prediction results styling */
+        .stMarkdown strong {
+            color: #000000;
+            font-weight: 600;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #F0F0F0;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #CCCCCC;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999999;
         }
         </style>
         """,
@@ -32,7 +133,9 @@ def set_background():
 
 # General Image Classification with MobileNetV2
 def mobilenetv2_imagenet():
-    st.title("Object Classification with MobileNetV2")
+    st.title("MobileNetV2 Classification")
+    st.markdown("Upload an image to classify it using the MobileNetV2 model trained on ImageNet.")
+    
     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "png", "jpeg"])
 
     if uploaded_file is not None:
@@ -42,27 +145,35 @@ def mobilenetv2_imagenet():
             image = image.convert("RGB")
 
         st.image(image, caption="Uploaded Image", use_column_width=True)
-        st.write("Classifying...")
+        
+        with st.spinner("Analyzing image..."):
+            model = tf.keras.applications.MobileNetV2(weights="imagenet")
+            img = image.resize((224, 224))
+            img_array = np.array(img)
+            img_array = np.expand_dims(img_array, axis=0)
+            img_array = tf.keras.applications.mobilenet_v2.preprocess_input(img_array)
 
-        model = tf.keras.applications.MobileNetV2(weights="imagenet")
-        img = image.resize((224, 224))
-        img_array = np.array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = tf.keras.applications.mobilenet_v2.preprocess_input(img_array)
+            predictions = model.predict(img_array)
+            decoded_predictions = tf.keras.applications.mobilenet_v2.decode_predictions(
+                predictions, top=3
+            )[0]
 
-        predictions = model.predict(img_array)
-        decoded_predictions = tf.keras.applications.mobilenet_v2.decode_predictions(
-            predictions, top=3
-        )[0]
-
-        st.write("**Top Predictions:**")
+        st.markdown("### 📊 Classification Results")
         for i, (imagenet_id, label, score) in enumerate(decoded_predictions):
-            st.write(f"{i + 1}. **{label}**: {score * 100:.2f}% confidence")
+            st.markdown(f"""
+            <div style='background-color: #F8F8F8; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #000;'>
+                <strong style='font-size: 1.1rem;'>{i + 1}. {label.replace('_', ' ').title()}</strong>
+                <br>
+                <span style='color: #666;'>Confidence: {score * 100:.2f}%</span>
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # General Image Classification with ResNet50
 def resnet50_imagenet():
-    st.title("Object Classification with ResNet50")
+    st.title("ResNet50 Classification")
+    st.markdown("Upload an image to classify it using the ResNet50 model trained on ImageNet.")
+    
     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "png", "jpeg"])
 
     if uploaded_file is not None:
@@ -72,27 +183,35 @@ def resnet50_imagenet():
             image = image.convert("RGB")
 
         st.image(image, caption="Uploaded Image", use_column_width=True)
-        st.write("Classifying...")
+        
+        with st.spinner("Analyzing image..."):
+            model = tf.keras.applications.ResNet50(weights="imagenet")
+            img = image.resize((224, 224))
+            img_array = np.array(img)
+            img_array = np.expand_dims(img_array, axis=0)
+            img_array = tf.keras.applications.resnet50.preprocess_input(img_array)
 
-        model = tf.keras.applications.ResNet50(weights="imagenet")
-        img = image.resize((224, 224))
-        img_array = np.array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = tf.keras.applications.resnet50.preprocess_input(img_array)
+            predictions = model.predict(img_array)
+            decoded_predictions = tf.keras.applications.resnet50.decode_predictions(
+                predictions, top=3
+            )[0]
 
-        predictions = model.predict(img_array)
-        decoded_predictions = tf.keras.applications.resnet50.decode_predictions(
-            predictions, top=3
-        )[0]
-
-        st.write("**Top Predictions:**")
+        st.markdown("### 📊 Classification Results")
         for i, (imagenet_id, label, score) in enumerate(decoded_predictions):
-            st.write(f"{i + 1}. **{label}**: {score * 100:.2f}% confidence")
+            st.markdown(f"""
+            <div style='background-color: #F8F8F8; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #000;'>
+                <strong style='font-size: 1.1rem;'>{i + 1}. {label.replace('_', ' ').title()}</strong>
+                <br>
+                <span style='color: #666;'>Confidence: {score * 100:.2f}%</span>
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # General Image Classification with EfficientNetB0
 def efficientnet_imagenet():
-    st.title("Object Classification with EfficientNetB0")
+    st.title("EfficientNetB0 Classification")
+    st.markdown("Upload an image to classify it using the EfficientNetB0 model trained on ImageNet.")
+    
     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "png", "jpeg"])
 
     if uploaded_file is not None:
@@ -102,27 +221,35 @@ def efficientnet_imagenet():
             image = image.convert("RGB")
 
         st.image(image, caption="Uploaded Image", use_column_width=True)
-        st.write("Classifying...")
+        
+        with st.spinner("Analyzing image..."):
+            model = tf.keras.applications.EfficientNetB0(weights="imagenet")
+            img = image.resize((224, 224))
+            img_array = np.array(img)
+            img_array = np.expand_dims(img_array, axis=0)
+            img_array = tf.keras.applications.efficientnet.preprocess_input(img_array)
 
-        model = tf.keras.applications.EfficientNetB0(weights="imagenet")
-        img = image.resize((224, 224))
-        img_array = np.array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = tf.keras.applications.efficientnet.preprocess_input(img_array)
+            predictions = model.predict(img_array)
+            decoded_predictions = tf.keras.applications.efficientnet.decode_predictions(
+                predictions, top=3
+            )[0]
 
-        predictions = model.predict(img_array)
-        decoded_predictions = tf.keras.applications.efficientnet.decode_predictions(
-            predictions, top=3
-        )[0]
-
-        st.write("**Top Predictions:**")
+        st.markdown("### 📊 Classification Results")
         for i, (imagenet_id, label, score) in enumerate(decoded_predictions):
-            st.write(f"{i + 1}. **{label}**: {score * 100:.2f}% confidence")
+            st.markdown(f"""
+            <div style='background-color: #F8F8F8; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #000;'>
+                <strong style='font-size: 1.1rem;'>{i + 1}. {label.replace('_', ' ').title()}</strong>
+                <br>
+                <span style='color: #666;'>Confidence: {score * 100:.2f}%</span>
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # CIFAR-10 Image Classification
 def cifar10_classification():
-    st.title("CIFAR-10 Image Classification")
+    st.title("CIFAR-10 Classification")
+    st.markdown("Upload an image to classify it into one of 10 CIFAR-10 categories using our custom trained model.")
+    
     uploaded_file = st.file_uploader(
         "Upload an image for CIFAR-10...", type=["jpg", "png", "jpeg"]
     )
@@ -134,41 +261,60 @@ def cifar10_classification():
             image = image.convert("RGB")
 
         st.image(image, caption="Uploaded Image", use_column_width=True)
-        st.write("Classifying...")
+        
+        with st.spinner("Analyzing image..."):
+            model = tf.keras.models.load_model("model111.h5")
+            class_names = [
+                "airplane",
+                "automobile",
+                "bird",
+                "cat",
+                "deer",
+                "dog",
+                "frog",
+                "horse",
+                "ship",
+                "truck",
+            ]
 
-        model = tf.keras.models.load_model("model111.h5")
-        class_names = [
-            "airplane",
-            "automobile",
-            "bird",
-            "cat",
-            "deer",
-            "dog",
-            "frog",
-            "horse",
-            "ship",
-            "truck",
-        ]
+            img = image.resize((32, 32))
+            img_array = np.array(img)
+            img_array = img_array.astype("float32") / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
 
-        img = image.resize((32, 32))
-        img_array = np.array(img)
-        img_array = img_array.astype("float32") / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+            predictions = model.predict(img_array)
+            predicted_class = np.argmax(predictions, axis=1)[0]
+            confidence = np.max(predictions)
 
-        predictions = model.predict(img_array)
-        predicted_class = np.argmax(predictions, axis=1)[0]
-        confidence = np.max(predictions)
-
-        st.write(f"Predicted Class: **{class_names[predicted_class]}**")
-        st.write(f"Confidence: **{confidence * 100:.2f}%**")
+        st.markdown("### 📊 Classification Result")
+        st.markdown(f"""
+        <div style='background-color: #F8F8F8; padding: 20px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #000;'>
+            <strong style='font-size: 1.3rem;'>Predicted Class: {class_names[predicted_class].upper()}</strong>
+            <br><br>
+            <span style='color: #666; font-size: 1.1rem;'>Confidence: {confidence * 100:.2f}%</span>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # Main Function for Navigation
 def main():
     set_background()  # Apply the CSS styling
-    st.sidebar.title("Navigation")
+    
+    # Page title and description
+    st.title("🖼️ Image Classification Studio")
+    st.markdown("""
+    <p style='font-size: 1.1rem; color: #666; margin-bottom: 30px;'>
+    Professional image classification using state-of-the-art deep learning models.
+    Select a model and upload an image to get started.
+    </p>
+    """, unsafe_allow_html=True)
+    
+    # Sidebar navigation
+    st.sidebar.title("Model Selection")
+    st.sidebar.markdown("---")
+    
     choice = st.sidebar.selectbox(
-        "Choose a Model for Image Classification",
+        "Choose a Classification Model",
         (
             "MobileNetV2 (ImageNet)",
             "ResNet50 (ImageNet)",
@@ -176,6 +322,16 @@ def main():
             "CIFAR-10",
         ),
     )
+    
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("""
+    ### About
+    This application provides multiple pre-trained models for image classification.
+    
+    **ImageNet Models**: General-purpose object detection (1000 classes)
+    
+    **CIFAR-10 Model**: Specialized for 10 specific categories
+    """)
 
     if choice == "MobileNetV2 (ImageNet)":
         mobilenetv2_imagenet()

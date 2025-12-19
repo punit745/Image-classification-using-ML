@@ -64,36 +64,91 @@ This README documents my internship project focused on implementing an image cla
     
 
 ## Getting Started
-    git clone https://github.com/username/project-repo.git
-Install the required libraries:
 
-    pip install tensorflow keras numpy matplotlib scikit-learn
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
 
-Import Libraries
+### Installation
 
-    import tensorflow as tf
-    from tensorflow.keras import layers, models
+1. Clone the repository:
+```bash
+git clone https://github.com/punit745/Image-classification-using-ML.git
+cd Image-classification-using-ML
+```
+
+2. Install the required libraries:
+```bash
+pip install -r requirements.txt
+```
+
+### Running the Project
+
+#### Option 1: Run the Streamlit Web Application (Recommended)
+
+The easiest way to interact with the models is through the Streamlit web interface:
+
+```bash
+streamlit run Streamlit_app.py
+```
+
+This will open a web browser with an interactive UI where you can:
+- Choose from multiple pre-trained models (MobileNetV2, ResNet50, EfficientNetB0)
+- Upload images for classification
+- Use the custom CIFAR-10 trained model
+- See predictions with confidence scores
+
+#### Option 2: Run in Jupyter Notebook
+
+To explore the model training and implementation details:
+
+1. Install Jupyter if not already installed:
+```bash
+pip install jupyter
+```
+
+2. Launch Jupyter Notebook:
+```bash
+jupyter notebook
+```
+
+3. Open either of these notebooks:
+   - `Implementation-of-ML-model-for-image-classification.ipynb` - Original CNN/ANN implementation
+   - `MobileNet_TransferLearning.ipynb` - Transfer learning with MobileNet
+
+4. Run the cells sequentially to:
+   - Load and preprocess the CIFAR-10 dataset
+   - Build and train CNN/ANN models
+   - Evaluate model performance
+   - Make predictions on test images
+
+### Quick Start Example
+
+If you want to use the models programmatically:
+
+```python
+import tensorflow as tf
+from tensorflow.keras import layers, models
 
 # Build a Simple CNN Model
-
-    model = models.Sequential([
-        layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
-        layers.MaxPooling2D((2, 2)),
-        layers.Conv2D(64, (3, 3), activation='relu'),
-        layers.MaxPooling2D((2, 2)),
-        layers.Flatten(),
-        layers.Dense(64, activation='relu'),
-        layers.Dense(10, activation='softmax')
-      ])
+model = models.Sequential([
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
+    layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
 
 # Compile the Model
-
-    model.compile(optimizer='adam', 
-                  loss='sparse_categorical_crossentropy', 
-                  metrics=['accuracy'])
+model.compile(optimizer='adam', 
+              loss='sparse_categorical_crossentropy', 
+              metrics=['accuracy'])
 
 # Summary of the Model
-    model.summary()
+model.summary()
+```
     
 # References
     CIFAR-10 Dataset: CIFAR-10 Official Website
