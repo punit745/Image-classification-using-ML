@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+import os
 
 
 # Adding CSS styling for minimalist black & white theme
@@ -9,121 +10,13 @@ def set_background():
     st.markdown(
         """
         <style>
-        /* Main app background - clean white */
         .stApp {
-            background-color: #FFFFFF;
-        }
-        
-        /* Sidebar styling - elegant black */
-        [data-testid="stSidebar"] {
-            background-color: #1A1A1A;
-        }
-        
-        [data-testid="stSidebar"] * {
-            color: #FFFFFF !important;
+            background: linear-gradient(135deg, #eaf7ff, #cce3f5);
         }
         
         /* Headings - professional black */
         h1, h2, h3, h4, h5, h6 {
-            color: #000000;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            border-bottom: 2px solid #000000;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        /* Body text - clean dark gray */
-        .stMarkdown, .stText, p {
-            color: #333333;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-        }
-        
-        /* File uploader styling */
-        [data-testid="stFileUploader"] {
-            border: 2px dashed #CCCCCC;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #F8F8F8;
-        }
-        
-        [data-testid="stFileUploader"]:hover {
-            border-color: #000000;
-            background-color: #F0F0F0;
-        }
-        
-        /* Button styling - minimalist black */
-        .stButton > button {
-            background-color: #000000;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 24px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-        
-        .stButton > button:hover {
-            background-color: #333333;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        
-        /* Select box styling */
-        .stSelectbox > div > div {
-            background-color: #F8F8F8;
-            border: 1px solid #CCCCCC;
-            border-radius: 4px;
-        }
-        
-        /* Image container */
-        [data-testid="stImage"] {
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-        
-        /* Info boxes */
-        .stAlert {
-            background-color: #F8F8F8;
-            border-left: 4px solid #000000;
-            border-radius: 4px;
-        }
-        
-        /* Remove default streamlit branding colors */
-        .css-1d391kg, .css-1v0mbdj {
-            color: #333333;
-        }
-        
-        /* Prediction results styling */
-        .stMarkdown strong {
-            color: #000000;
-            font-weight: 600;
-        }
-        
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #F0F0F0;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #CCCCCC;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #999999;
+            color: #0078D7;
         }
         </style>
         """,
@@ -261,39 +154,42 @@ def cifar10_classification():
             image = image.convert("RGB")
 
         st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.write("Classifying...")
+
+        # Check if model file exists
+        model_path = "saved_models/cnn_model_final.h5"
+        if not os.path.exists(model_path):
+            # Fall back to old model name if it exists
+            model_path = "model111.h5"
+            if not os.path.exists(model_path):
+                st.error("Model file not found. Please train the model first using train.py")
+                return
         
-        with st.spinner("Analyzing image..."):
-            model = tf.keras.models.load_model("model111.h5")
-            class_names = [
-                "airplane",
-                "automobile",
-                "bird",
-                "cat",
-                "deer",
-                "dog",
-                "frog",
-                "horse",
-                "ship",
-                "truck",
-            ]
+        model = tf.keras.models.load_model(model_path)
+        class_names = [
+            "airplane",
+            "automobile",
+            "bird",
+            "cat",
+            "deer",
+            "dog",
+            "frog",
+            "horse",
+            "ship",
+            "truck",
+        ]
 
-            img = image.resize((32, 32))
-            img_array = np.array(img)
-            img_array = img_array.astype("float32") / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
+        img = image.resize((32, 32))
+        img_array = np.array(img)
+        img_array = img_array.astype("float32") / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
 
-            predictions = model.predict(img_array)
-            predicted_class = np.argmax(predictions, axis=1)[0]
-            confidence = np.max(predictions)
+        predictions = model.predict(img_array)
+        predicted_class = np.argmax(predictions, axis=1)[0]
+        confidence = np.max(predictions)
 
-        st.markdown("### 📊 Classification Result")
-        st.markdown(f"""
-        <div style='background-color: #F8F8F8; padding: 20px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #000;'>
-            <strong style='font-size: 1.3rem;'>Predicted Class: {class_names[predicted_class].upper()}</strong>
-            <br><br>
-            <span style='color: #666; font-size: 1.1rem;'>Confidence: {confidence * 100:.2f}%</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.write(f"Predicted Class: **{class_names[predicted_class]}**")
+        st.write(f"Confidence: **{confidence * 100:.2f}%**")
 
 
 # Main Function for Navigation
