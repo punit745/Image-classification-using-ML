@@ -348,11 +348,19 @@ cd Image-classification-using-ML
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Launch web interface (uses pre-trained ImageNet models)
+# 3. Launch web interface
 streamlit run Streamlit_app.py
 ```
 
-The Streamlit app will work immediately with pre-trained ImageNet models (MobileNetV2, ResNet50, EfficientNetB0). To use the custom CIFAR-10 model, you'll need to train it first.
+**What works immediately:**
+- The Streamlit app will open with pre-trained ImageNet models (MobileNetV2, ResNet50, EfficientNetB0) that download automatically when you first select them.
+- These models can classify 1000+ different objects from the ImageNet dataset.
+
+**What requires training:**
+- To use the custom CIFAR-10 model (10 classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck), you'll need to train it first using:
+  ```bash
+  python train.py --model cnn --epochs 5
+  ```
 
 ---
 
