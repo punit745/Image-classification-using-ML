@@ -1,7 +1,7 @@
 # Image Classification using Deep Learning
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange.svg)](https://www.tensorflow.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.16-orange.svg)](https://www.tensorflow.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 A comprehensive image classification project implementing both Convolutional Neural Networks (CNN) and Artificial Neural Networks (ANN) for the CIFAR-10 dataset. This project includes a clean, modular codebase with training scripts, inference tools, and a web-based interface using Streamlit.

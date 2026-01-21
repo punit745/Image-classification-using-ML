@@ -44,6 +44,7 @@ ENV/
 *.pth
 *.pt
 saved_models/
+checkpoints/
 
 # Data files
 *.csv
