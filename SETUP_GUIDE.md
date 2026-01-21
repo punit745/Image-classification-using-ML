@@ -170,7 +170,7 @@ python predict.py --model saved_models/cnn_model_final.h5 --image path/to/your/i
 
 **Example with sample images:**
 ```bash
-python predict.py --model saved_models/cnn_model_final.h5 --image sample_images/cat.jpg
+python predict.py --model saved_models/cnn_model_final.h5 --image sample_images/Image-1.jpeg
 ```
 
 **Expected output:**
