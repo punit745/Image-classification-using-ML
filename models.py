@@ -20,7 +20,8 @@ def build_ann_model(input_shape=(32, 32, 3), num_classes=10):
         Compiled Keras model
     """
     model = keras.Sequential([
-        layers.Flatten(input_shape=input_shape),
+        layers.Input(shape=input_shape),
+        layers.Flatten(),
         layers.Dense(MODEL_CONFIG['ann_dense_units'], activation='relu'),
         layers.Dense(num_classes, activation='softmax')
     ], name='ANN_Model')
@@ -47,14 +48,16 @@ def build_cnn_model(input_shape=(32, 32, 3), num_classes=10):
     """
     model = keras.Sequential(name='CNN_Model')
     
+    # Add input layer
+    model.add(layers.Input(shape=input_shape))
+    
     # Add convolutional blocks
     for filters in MODEL_CONFIG['cnn_filters']:
         model.add(layers.Conv2D(
             filters,
             kernel_size=MODEL_CONFIG['cnn_kernel_size'],
             padding='same',
-            activation='relu',
-            input_shape=input_shape if len(model.layers) == 0 else None
+            activation='relu'
         ))
         model.add(layers.BatchNormalization())
         model.add(layers.MaxPooling2D(MODEL_CONFIG['cnn_pool_size']))
