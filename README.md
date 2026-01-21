@@ -6,6 +6,10 @@
 
 A comprehensive image classification project implementing both Convolutional Neural Networks (CNN) and Artificial Neural Networks (ANN) for the CIFAR-10 dataset. This project includes a clean, modular codebase with training scripts, inference tools, and a web-based interface using Streamlit.
 
+## 🚀 Quick Start
+
+**New to this project?** Check out the **[📘 Step-by-Step Setup Guide](SETUP_GUIDE.md)** for detailed instructions on setting up and running this project on your local machine.
+
 ## Project Overview
 
 This project demonstrates the implementation and comparison of different neural network architectures for image classification tasks:
