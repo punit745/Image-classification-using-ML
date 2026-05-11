@@ -75,7 +75,7 @@ def train_model(model_type='cnn', epochs=None, batch_size=None):
     print(f"Test Accuracy: {test_accuracy:.4f}")
     
     # Save final model
-    model_path = os.path.join(MODEL_CONFIG['model_save_path'], f'{model_type}_model_final.h5')
+    model_path = os.path.join(MODEL_CONFIG['model_save_path'], f'{model_type}_model_final.keras')
     model.save(model_path)
     print(f"\nModel saved to: {model_path}")
     

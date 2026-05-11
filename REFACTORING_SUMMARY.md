@@ -54,7 +54,7 @@ This document summarizes the comprehensive refactoring of the Image Classificati
 8. **.gitignore** - Git ignore rules
    - Python cache and bytecode
    - Virtual environments
-   - Model files (*.h5, *.hdf5)
+   - Model files (*.h5, *.hdf5, *.keras)
    - Data files
    - IDE files
    - Logs
@@ -198,7 +198,7 @@ python train.py --model ann --epochs 10
 ### Prediction
 ```bash
 # Predict on a single image
-python predict.py --model saved_models/cnn_model_final.h5 --image sample_images/Image-1.jpeg
+python predict.py --model saved_models/cnn_model_final.keras --image sample_images/Image-1.jpeg
 ```
 
 ### Web Interface

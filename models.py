@@ -108,7 +108,7 @@ def get_callbacks(model_name='model'):
         
         # Model checkpoint
         keras.callbacks.ModelCheckpoint(
-            filepath=f"{MODEL_CONFIG['checkpoint_path']}{model_name}_best.h5",
+            filepath=f"{MODEL_CONFIG['checkpoint_path']}{model_name}_best.keras",
             monitor='val_accuracy',
             save_best_only=True,
             verbose=1

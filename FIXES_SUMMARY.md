@@ -108,7 +108,7 @@ python train.py --model cnn --epochs 20 --batch-size 64
 
 ### Prediction
 ```bash
-python predict.py --model saved_models/cnn_model_final.h5 --image sample_images/Image-1.jpeg
+python predict.py --model saved_models/cnn_model_final.keras --image sample_images/Image-1.jpeg
 ```
 
 ### Web Interface

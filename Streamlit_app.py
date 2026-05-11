@@ -157,13 +157,15 @@ def cifar10_classification():
         st.write("Classifying...")
 
         # Check if model file exists
-        model_path = "saved_models/cnn_model_final.h5"
-        if not os.path.exists(model_path):
-            # Fall back to old model name if it exists
-            model_path = "model111.h5"
-            if not os.path.exists(model_path):
-                st.error("Model file not found. Please train the model first using train.py")
-                return
+        model_candidates = [
+            "saved_models/cnn_model_final.keras",
+            "saved_models/cnn_model_final.h5",
+            "model111.h5",
+        ]
+        model_path = next((path for path in model_candidates if os.path.exists(path)), None)
+        if model_path is None:
+            st.error("Model file not found. Please train the model first using train.py")
+            return
         
         model = tf.keras.models.load_model(model_path)
         class_names = [
