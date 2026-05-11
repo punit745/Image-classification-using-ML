@@ -110,14 +110,14 @@ The script will:
 - Display test accuracy
 
 **Training Output**:
-- Best model: `checkpoints/cnn_model_best.h5` or `checkpoints/ann_model_best.h5`
-- Final model: `saved_models/cnn_model_final.h5` or `saved_models/ann_model_final.h5`
+- Best model: `checkpoints/cnn_model_best.keras` or `checkpoints/ann_model_best.keras`
+- Final model: `saved_models/cnn_model_final.keras` or `saved_models/ann_model_final.keras`
 
 ### 2. Making Predictions
 
 Classify a single image:
 ```bash
-python predict.py --model saved_models/cnn_model_final.h5 --image path/to/your/image.jpg
+python predict.py --model saved_models/cnn_model_final.keras --image path/to/your/image.jpg
 ```
 
 Example output:

@@ -165,12 +165,12 @@ python train.py --model ann --epochs 10 --batch-size 64
 After training a model, classify any image:
 
 ```bash
-python predict.py --model saved_models/cnn_model_final.h5 --image path/to/your/image.jpg
+python predict.py --model saved_models/cnn_model_final.keras --image path/to/your/image.jpg
 ```
 
 **Example with sample images:**
 ```bash
-python predict.py --model saved_models/cnn_model_final.h5 --image sample_images/Image-1.jpeg
+python predict.py --model saved_models/cnn_model_final.keras --image sample_images/Image-1.jpeg
 ```
 
 **Expected output:**
@@ -239,11 +239,11 @@ This tests:
 ```
 Image-classification-using-ML/
 ├── saved_models/           # Contains trained models
-│   ├── cnn_model_final.h5
-│   └── ann_model_final.h5 (if trained)
+│   ├── cnn_model_final.keras
+│   └── ann_model_final.keras (if trained)
 ├── checkpoints/            # Contains best models during training
-│   ├── cnn_model_best.h5
-│   └── ann_model_best.h5
+│   ├── cnn_model_best.keras
+│   └── ann_model_best.keras
 ├── training_history.png    # Training plots (auto-generated)
 └── [other project files]
 ```

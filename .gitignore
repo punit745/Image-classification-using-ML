@@ -39,6 +39,7 @@ ENV/
 # Model files (large binary files)
 *.h5
 *.hdf5
+*.keras
 *.pb
 *.ckpt
 *.pth

@@ -6,7 +6,7 @@ These images are from the CIFAR-10 dataset and can be used with:
 
 ```bash
 # Using the prediction script
-python predict.py --model saved_models/cnn_model_final.h5 --image sample_images/Image-1.jpeg
+python predict.py --model saved_models/cnn_model_final.keras --image sample_images/Image-1.jpeg
 
 # Or through the Streamlit web interface
 streamlit run Streamlit_app.py
